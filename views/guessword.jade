@@ -1,0 +1,15 @@
+extends layout
+
+block scripts
+  script(src='/javascripts/guessword.js')
+  script(src='/javascripts/option_dialog.js')
+  script(src='/javascripts/lib/underscore-min.js')
+
+block content
+    input#wordListInputField(type="hidden", value="#{wordList}")
+    h1.
+        Guess Word
+    p
+        div#definitionFieldDiv
+    p
+        div#altButtonDivs

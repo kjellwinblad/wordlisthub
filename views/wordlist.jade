@@ -1,0 +1,42 @@
+extends layout
+
+block scripts
+  script(src='/javascripts/option_dialog.js')
+  script(src='/javascripts/wordlist.js')
+  script(src='/javascripts/typepinyin.js')
+
+block content
+    h1.
+        Word List <i>#{wordList.name}</i>
+    form#makePublicPrivateForm(name="makePublicPrivateForm",method="post",action="/wordlists/#{wordList._id}/makepublicprivate")
+        button(type="submit") Make !{(wordList.isPublic ? "Private" : "Public")}
+    br
+    table(id="wordListTable", wordListId="#{wordList._id}", style="border-collapse: collapse; border: 1px solid black;")
+        each word, i in wordList.words
+            tr(name="wordRow", position="#{i}", word="#{word.word}")
+                td(style="border: 1px solid black;")
+                    !{word.word.join(", ")}
+                td(style="border: 1px solid black;") #{word.explanation}
+                td
+                    button(name="deleteWord", position="#{i}") remove
+                td 
+                    button(name="editWord", position="#{i}", word="#{word.jsonString}", explanation="#{word.explanation}") edit
+    h2.
+        Add Word
+    form#formAddWord(name="addword",method="post",action="/wordlists/#{wordList._id}/addword")
+        input#newWordField1(type="text", placeholder="my word", name="word1")
+        span#newWordAddAlternativePlaceholder()
+        button#newWordAddAlternativeFormButton(type="button") Add
+        br
+        textarea#newWordExplanantionField(placeholder="my description", name="explanation" form="formAddWord")
+        br
+        button(type="submit") Add!
+    div(id="editWordDiv", style="display: none;")
+            form#formEditWord(name="editword",method="post",action="/hej")
+                span#editWordAddAlternativePlaceholder()
+                button#addAlternativeFormButton(type="button") Add
+                br
+                textarea(name="explanation", id="editExplanationField", form="formEditWord")
+                br
+                button(type="submit") Save!
+                button#editCancelButton(type="button") Cancel

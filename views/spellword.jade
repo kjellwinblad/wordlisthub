@@ -1,0 +1,16 @@
+extends layout
+
+block scripts
+  script(src='/javascripts/spellword.js')
+  script(src='/javascripts/option_dialog.js')
+  script(src='/javascripts/lib/underscore-min.js')
+
+block content
+    input#wordListInputField(type="hidden", value="#{wordList}")
+    h1.
+        Spell Word
+    p
+        div#definitionFieldDiv
+    p
+        input#wordInput(type="text", placeholder="Spell word")
+        button#tryButton Try

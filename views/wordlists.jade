@@ -1,0 +1,27 @@
+extends layout
+
+block scripts
+  script(src='/javascripts/wordlists.js')
+  script(src='/javascripts/option_dialog.js')
+
+block content
+    h1.
+        Word Lists
+    table
+        each wordList, i in wordLists
+            tr
+                td #{wordList.name}
+                td 
+                    button(name="deleteWordList", _id="#{wordList._id}", wordListName="#{wordList.name}") remove
+                td 
+                    button(name="editButton", wordListId="#{wordList._id}") Edit
+                td
+                    select(name="wordlistGameSelector", wordListId="#{wordList._id}")
+                        option(value="none", style="font-weight:bold;") Select Game
+                        option(value="guessword") Guess Word
+                        option(value="spellword") Spell Word
+    h2.
+        Add Wordlist
+    form#formAddWordList(name="addwordlist",method="post",action="/addwordlist")
+        input#inputWordListName(type="text", placeholder="my word list", name="name")
+        button#btnSubmit(type="submit") Add!

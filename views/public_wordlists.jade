@@ -1,0 +1,18 @@
+extends layout
+
+block scripts
+  script(src='/javascripts/wordlists.js')
+  script(src='/javascripts/option_dialog.js')
+
+block content
+    h1.
+        Word Lists
+    table
+        each wordList, i in wordLists
+            tr
+                td #{wordList.name}
+                td
+                    select(name="wordlistGameSelector", wordListId="#{wordList._id}")
+                        option(value="none", style="font-weight:bold;") Select Game
+                        option(value="guessword") Guess Word
+                        option(value="spellword") Spell Word
