@@ -1,5 +1,3 @@
-
-
 //Add function to get current cursor position
 //From: http://stackoverflow.com/questions/1891444/cursor-position-in-a-textarea-character-index-not-x-y-coordinates
 (function ($, undefined) {

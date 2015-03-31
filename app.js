@@ -18,8 +18,6 @@ var users = require('./routes/users');
 
 console.log("db", db);
 
-
-
 var app = express();
 
 // Make our db accessible to our router
