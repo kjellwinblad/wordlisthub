@@ -37,7 +37,7 @@ var smtpServer  = email.server.connect({
 });
 
 var pathToMongoDb = 'mongodb://127.0.0.1:27017/mutualwords';//'mongodb://127.0.0.1:27017/mutualwords';
-var host = email.sendHost;
+var host = emailLoginInfo.sendHost;
 passwordless.init(new MongoStore(pathToMongoDb));
 
 // Set up a delivery service
