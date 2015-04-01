@@ -28,7 +28,6 @@ app.use(function(req,res,next){
 
 var data = fs.readFileSync("../../emailLogin", 'utf8').toString();
 
-console.log('Read e-mail config ');
 var emailLoginInfo = JSON.parse(data);
 var smtpServer  = email.server.connect({
     user:    emailLoginInfo.user, 
@@ -38,7 +37,7 @@ var smtpServer  = email.server.connect({
 });
 
 var pathToMongoDb = 'mongodb://127.0.0.1:27017/mutualwords';//'mongodb://127.0.0.1:27017/mutualwords';
-var host = 'localhost:3000';
+var host = email.sendHost;
 passwordless.init(new MongoStore(pathToMongoDb));
 
 // Set up a delivery service
