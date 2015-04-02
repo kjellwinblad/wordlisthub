@@ -215,15 +215,10 @@ router.get('/wordlists/:id/spellword', function(req, res) {
 
 
 
-/* GET restricted site. */
-router.get('/restricted', passwordless.restricted(),
- function(req, res) {
-  res.render('restricted', { user: req.user });
-});
 
 /* GET login screen. */
 router.get('/login', function(req, res) {
-  res.render('login.ejs', { user: req.user });
+  res.redirect('/');
 });
 
 /* GET logout. */
@@ -250,7 +245,7 @@ router.post('/sendtoken',
 			// })
 		}),
 	function(req, res) {
-  		res.render('sent.ejs');
+  		res.render('sent');
 });
 
 module.exports = router;
