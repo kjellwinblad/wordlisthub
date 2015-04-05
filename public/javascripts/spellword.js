@@ -1,6 +1,7 @@
 $().ready(function(){
     var definitionField = $("#definitionFieldDiv");
     var wordInput = $("#wordInput");
+    makePinyinTypeable(wordInput);
     var tryButton = $("#tryButton");
     var wordList = $.parseJSON($('#wordListInputField').val());
     var wordsToLearn = $.map(wordList.words, function(word){

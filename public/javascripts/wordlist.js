@@ -42,6 +42,7 @@ $().ready(function(){
             makePinyinTypeable($('#newWordField'+numberOfAlternatieFormsSoFar));
         });
         $('#editCancelButton').click(function(){
+            $("button").attr("disabled", "false");
             location.reload();
         });
     });
