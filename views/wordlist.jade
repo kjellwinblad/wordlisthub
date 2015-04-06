@@ -26,6 +26,7 @@ block content
     form#formAddWord(name="addword",method="post",action="/wordlists/#{wordList._id}/addword")
         input#newWordField1(type="text", placeholder="my word", name="word1")
         span#newWordAddAlternativePlaceholder()
+        br
         button#newWordAddAlternativeFormButton(type="button") Add
         br
         textarea#newWordExplanantionField(placeholder="my description", name="explanation" form="formAddWord")
@@ -34,6 +35,7 @@ block content
     div(id="editWordDiv", style="display: none;")
             form#formEditWord(name="editword",method="post",action="/hej")
                 span#editWordAddAlternativePlaceholder()
+                br
                 button#addAlternativeFormButton(type="button") Add
                 br
                 textarea(name="explanation", id="editExplanationField", form="formEditWord")
