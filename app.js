@@ -47,7 +47,7 @@ passwordless.addDelivery(
             text:    'Hello!\nAccess your account here: http://' 
                 + host + '?token=' + tokenToSend + '&uid=' 
                 + encodeURIComponent(uidToSend), 
-            from:    emailLoginInfo.user, 
+            from:    "no_reply@" + host, 
             to:      recipient,
             subject: 'Token for ' + host
         }, function(err, message) { 
