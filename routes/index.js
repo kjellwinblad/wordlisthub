@@ -8,23 +8,28 @@ var users = {}
 
 /* GET home page. */
 router.get('/', function(req, res) {
-    if(req.user!== undefined){console.log(req.user[0]);}
-    console.log({ha:"asd"});
-    console.log(users[req.user]);
-    console.log([]);
     res.render('index', { title: 'WordListHub.com', user: users[req.user] });
 });
 
-router.post('/wordlists/remove/:id', function(req, res) {
+router.post('/wordlists/remove/:id', passwordless.restricted(),
+            function(req, res) {
     var db = req.db;
     var collection = db.get('wordLists');
     var id = req.params.id;
-    collection.remove({_id: id});
-    res.location("/public_wordlists");
-    res.redirect("/public_wordlists");
+    collection.findById(id,function(e,wordList){
+        if(wordList == undefined || (wordList !== undefined && wordList.owner !== req.user)){
+            res.location("/public_wordlists");
+            res.redirect("/public_wordlists");
+        }else{
+            var promise = collection.remove({_id: id});
+            res.location("/wordlists");
+            res.redirect("/wordlists");
+        }
+    });
 });
 
-router.post('/wordlists/:id/editword/:position', function(req, res) {
+router.post('/wordlists/:id/editword/:position', passwordless.restricted(),
+            function(req, res) {
     var db = req.db;
     var collection = db.get('wordLists');
     var id = req.params.id;
@@ -34,20 +39,25 @@ router.post('/wordlists/:id/editword/:position', function(req, res) {
         wordAlternatives.push(req.body["word" + wordNr]);
         wordNr = wordNr + 1;
     }
-    console.log(wordAlternatives, req.body);
     var explanation = req.body.explanation;
     var position = Math.round(req.params.position);
     collection.findById(id,function(e,wordList){
-        wordList.words[position] = {word:wordAlternatives, explanation:explanation};
-        var promise = collection.update({_id:id}, wordList);
-        promise.on('success', function(){
-            res.location("/wordlists/" + id);
-            res.redirect("/wordlists/" + id);
-        });
+        if(wordList == undefined || (wordList !== undefined && wordList.owner !== req.user)){
+            res.location("/public_wordlists");
+            res.redirect("/public_wordlists");
+        }else{
+            wordList.words[position] = {word:wordAlternatives, explanation:explanation};
+            var promise = collection.update({_id:id}, wordList);
+            promise.on('success', function(){
+                res.location("/wordlists/" + id);
+                res.redirect("/wordlists/" + id);
+            });
+        }
     });
 });
 
-router.post('/wordlists/:id/addword', function(req, res) {
+router.post('/wordlists/:id/addword', passwordless.restricted(),
+            function(req, res) {
     var db = req.db;
     var collection = db.get('wordLists');
     var id = req.params.id;
@@ -58,82 +68,97 @@ router.post('/wordlists/:id/addword', function(req, res) {
         wordNr = wordNr + 1;
     }
     var explanation = req.body.explanation;
-    console.log(id, wordAlternatives, explanation);
     collection.findById(id,function(e,wordList){
-        wordList.words.push({
-            word: wordAlternatives,
-            explanation: explanation
-        });
-        var promise = collection.update({_id:id}, wordList);
-        promise.on('success', function(){
-            res.location("/wordlists/" + id);
-            res.redirect("/wordlists/" + id);
-        });
+        if(wordList === undefined || (wordList !== undefined && wordList.owner !== req.user)){
+            res.location("/public_wordlists");
+            res.redirect("/public_wordlists");
+        }else{
+            wordList.words.push({
+                word: wordAlternatives,
+                explanation: explanation
+            });
+            var promise = collection.update({_id:id}, wordList);
+            promise.on('success', function(){
+                res.location("/wordlists/" + id);
+                res.redirect("/wordlists/" + id);
+            });
+        }
     });
 });
 
 
-router.post('/wordlists/:id/makepublicprivate', function(req, res) {
+router.post('/wordlists/:id/makepublicprivate', passwordless.restricted(),
+            function(req, res) {
     var db = req.db;
     var collection = db.get('wordLists');
     var id = req.params.id;
     collection.findById(id,function(e,wordList){
-        if(wordList['isPublic'] === undefined){
-            wordList['isPublic'] = true;
+        if(wordList === undefined || (wordList !== undefined && wordList.owner !== req.user)){
+            res.location("/public_wordlists");
+            res.redirect("/public_wordlists");
         }else{
-            wordList['isPublic'] = !wordList['isPublic'];
+            if(wordList['isPublic'] === undefined){
+                wordList['isPublic'] = true;
+            }else{
+                wordList['isPublic'] = !wordList['isPublic'];
+            }
+            var promise = collection.update({_id:id}, wordList);
+            promise.on('success', function(){
+                res.location("/wordlists/" + id);
+                res.redirect("/wordlists/" + id);
+            });
         }
-        var promise = collection.update({_id:id}, wordList);
-        promise.on('success', function(){
-            res.location("/wordlists/" + id);
-            res.redirect("/wordlists/" + id);
-        });
     });
 });
 
 
-router.post('/wordlists/:id/removeword/:position', function(req, res) {
+router.post('/wordlists/:id/removeword/:position', passwordless.restricted(),
+            function(req, res) {
     var db = req.db;
     var collection = db.get('wordLists');
     var id = req.params.id
     var position = req.params.position
     collection.findById(id,function(e,wordList){
-        console.log("before",wordList.words);
-        wordList.words.splice(position, 1);
-        console.log("after",wordList.words);
-        var promise = collection.update({_id:id}, wordList);
-        promise.on('success', function(){
-            res.location("/wordlists/" + id);
-            res.redirect("/wordlists/" + id);
-        });
+        if(wordList === undefined || (wordList !== undefined && wordList.owner !== req.user)){
+            res.location("/public_wordlists");
+            res.redirect("/public_wordlists");
+        }else{
+            wordList.words.splice(position, 1);
+            var promise = collection.update({_id:id}, wordList);
+            promise.on('success', function(){
+                res.location("/wordlists/" + id);
+                res.redirect("/wordlists/" + id);
+            });
+        }
     });
 });
 
-router.get('/wordlists/:id', function(req, res) {
+router.get('/wordlists/:id', passwordless.restricted(),
+           function(req, res) {
     var db = req.db;
     var collection = db.get('wordLists');
     var id = req.params.id
     collection.findById(id,function(e,wordList){
-        _.each(wordList.words, function(word){
-            word.jsonString = JSON.stringify(word)
-        });
-        console.log(wordList)
-        res.render('wordlist', {
-            "wordList" : wordList,
-            user: users[req.user]
-        });
+        if(wordList === undefined || (wordList !== undefined && wordList.owner !== req.user)){
+            res.location("/public_wordlists");
+            res.redirect("/public_wordlists");
+        }else{
+            _.each(wordList.words, function(word){
+                word.jsonString = JSON.stringify(word)
+            });
+            res.render('wordlist', {
+                "wordList" : wordList,
+                user: users[req.user]
+            });
+        }
     });
 });
 
-router.get('/wordlists',
+router.get('/wordlists', passwordless.restricted(),
            function(req, res) {
     var db = req.db;
-    console.log(db);
     var collection = db.get('wordLists');
-    console.log(collection);
     collection.find({owner:req.user},{},function(e,docs){
-        console.log(e);
-        console.log(docs);
         res.render('wordlists', {
             "wordLists" : docs,
             user: users[req.user] 
@@ -145,17 +170,16 @@ router.get('/wordlists',
 router.get('/public_wordlists',
            function(req, res) {
     var db = req.db;
-    console.log(db);
     var collection = db.get('wordLists');
     collection.find({ isPublic: true },{},function(e,docs){
         res.render('public_wordlists', {
             "wordLists" : docs,
-            user: req.user 
+            user: users[req.user] 
         });
     });
 });
 
-router.post('/addwordlist', function(req, res) {
+router.post('/addwordlist', passwordless.restricted(), function(req, res) {
 
     // Set our internal DB variable
     var db = req.db;
@@ -212,8 +236,6 @@ router.get('/wordlists/:id/spellword', function(req, res) {
         });
     });
 });
-
-
 
 
 /* GET login screen. */

@@ -33,9 +33,9 @@ $().ready(function(){
             numberOfAlternatieFormsSoFar = numberOfAlternatieFormsSoFar + 1;            
             var newElement = undefined;
             if(numberOfAlternatieFormsSoFar === 1){
-                newElement = $('<br/><input id="editWordField'+numberOfAlternatieFormsSoFar+'" type="text" placeholder="my word" name="word'+numberOfAlternatieFormsSoFar+'" value="'+word+'">');
+                newElement = $('<input id="editWordField'+numberOfAlternatieFormsSoFar+'" type="text" placeholder="my word" name="word'+numberOfAlternatieFormsSoFar+'" value="'+word+'">');
             }else{
-                newElement = $('<span id="editWordDiv'+numberOfAlternatieFormsSoFar+'"><br><input id="editWordField'+numberOfAlternatieFormsSoFar+'" type="text" placeholder="my word" name="word'+numberOfAlternatieFormsSoFar+'" value="'+word+'"><button id="editWordRemoveWordButton'+numberOfAlternatieFormsSoFar+'" number="'+numberOfAlternatieFormsSoFar+'" type="button">Remove</button></span>');
+                newElement = $('<br/><span id="editWordDiv'+numberOfAlternatieFormsSoFar+'"><input id="editWordField'+numberOfAlternatieFormsSoFar+'" type="text" placeholder="my word" name="word'+numberOfAlternatieFormsSoFar+'" value="'+word+'"><button id="editWordRemoveWordButton'+numberOfAlternatieFormsSoFar+'" number="'+numberOfAlternatieFormsSoFar+'" type="button">Remove</button></span>');
             }
             newElement.insertBefore($('#editWordAddAlternativePlaceholder'));
             $('#editWordRemoveWordButton'+numberOfAlternatieFormsSoFar).click(function(){
@@ -51,7 +51,7 @@ $().ready(function(){
         });
         $('#addAlternativeFormButton').click(function(){
             numberOfAlternatieFormsSoFar = numberOfAlternatieFormsSoFar + 1;
-            $('<span id="editWordDiv'+numberOfAlternatieFormsSoFar+'"><br><input id="editWordField'+numberOfAlternatieFormsSoFar+'" type="text" placeholder="my word" name="word'+numberOfAlternatieFormsSoFar+'"><button id="editWordRemoveWordButton'+numberOfAlternatieFormsSoFar+'" number="'+numberOfAlternatieFormsSoFar+'" type="button">Remove</button></span>')
+            $('<br/><span id="editWordDiv'+numberOfAlternatieFormsSoFar+'"><input id="editWordField'+numberOfAlternatieFormsSoFar+'" type="text" placeholder="my word" name="word'+numberOfAlternatieFormsSoFar+'"><button id="editWordRemoveWordButton'+numberOfAlternatieFormsSoFar+'" number="'+numberOfAlternatieFormsSoFar+'" type="button">Remove</button></span>')
                 .insertBefore($('#editWordAddAlternativePlaceholder'));
             $('#editWordRemoveWordButton'+numberOfAlternatieFormsSoFar).click(function(){
                 var toRemove = parseInt($(this).attr("number"));
