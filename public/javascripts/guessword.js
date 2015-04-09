@@ -9,6 +9,8 @@ $().ready(function(){
         clone.successes = 0;
         return clone;
     } );
+    var failures = 0;
+    var successes = 0;
     if(wordsToLearn.length < numberOfAltButtons){
         numberOfAltButtons = wordsToLearn.length;
     }
@@ -20,7 +22,21 @@ $().ready(function(){
     });
     function play(){
         if(wordsToLearn.length === 0){
-            infoDialog("Game Completed", "<h1>Congratulation!</h1><p>You have now completed this game! Now you can play something else or play the same game again.</p>");
+            openOptionDialog("Game Completed",
+                             "<h2>Score: "+ (100*(successes / (successes + failures))).toFixed(2) +"%</h2>" + 
+                             "<p>" +
+                             "<b>Number of correct answers:" + successes +"</b><br>" +
+                             "<b>Number of incorrect answers:" + failures +"</b><br>" +
+                             "<p>" +
+                             "<p><b>Congratulation!</b>You have now completed this game! Now you can play something else or play the same game again.</p>",
+                             ["Play again", "Go to word lists"],
+                             function(option){
+                                 if(option == 0){
+                                     location.reload(); 
+                                 }else{
+                                     window.location.href = '/public_wordlists';
+                                 }
+                             });
             return;
         }
         var wordIndex = _.random(wordsToLearn.length - 1);
@@ -48,6 +64,7 @@ $().ready(function(){
                         $(this).remove(); 
                     });
                     wordToLearn.successes = wordToLearn.successes + 1;
+                    successes = successes + 1;
                     if((wordToLearn.successes - wordToLearn.failures) === 1){
                         wordsToLearn = _.without(wordsToLearn, wordToLearn);
                     }
@@ -56,6 +73,7 @@ $().ready(function(){
             }else{
                 altButton.bind('click.guessEvent', function(){
                     wordToLearn.failures = wordToLearn.failures + 1;
+                    failures = failures + 1;
                     var overlay = jQuery('<div id="failOverlay"></div>');//<br/>
                     overlay.appendTo(document.body);
                     overlay.fadeOut(4000, function(){ 
