@@ -26,7 +26,7 @@ app.use(function(req,res,next){
     next();
 });
 
-var data = fs.readFileSync("../../emailLogin", 'utf8').toString();
+var data = fs.readFileSync("wordlisthub_config.json", 'utf8').toString();
 
 var emailLoginInfo = JSON.parse(data);
 var smtpServer  = email.server.connect({

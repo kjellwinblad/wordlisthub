@@ -30,6 +30,6 @@ steps to set up a test environment:
 4. Install the nodejs dependencies `npm install`
 5. Configure the e-mail based login system by editing the file `wordlisthub_config.json`
 7. Create a directory for the database, e.g.: `mkdir data`
-6. Start mongodb `mongod --smallfiles --dbpath --port 27018 data`
+6. Start mongodb (will take a few seconds) `mongod --smallfiles --port 27018 --dbpath data`
 7. Start the web server (in another terminal) `npm start`
 8. Open [http://localhost:3000](http://localhost:3000) in your web browser
