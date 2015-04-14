@@ -1,6 +1,6 @@
 #!/bin/sh
 
-mongod --smallfiles --dbpath  ../../data &
+mongod --smallfiles --dbpath --port 27018  ../../data &
 
 sleep 5
 

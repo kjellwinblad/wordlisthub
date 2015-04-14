@@ -7,7 +7,7 @@ var expressSession = require('express-session');
 var bodyParser = require('body-parser');
 var mongo = require('mongodb');
 var monk = require('monk');
-var db = monk('127.0.0.1:27017/mutualwords');
+var db = monk('127.0.0.1:27018/mutualwords');
 var passwordless = require('passwordless');
 var MongoStore = require('passwordless-mongostore');
 var email   = require("emailjs");
@@ -36,7 +36,7 @@ var smtpServer  = email.server.connect({
     ssl:     emailLoginInfo.useSSL
 });
 
-var pathToMongoDb = 'mongodb://127.0.0.1:27017/mutualwords';//'mongodb://127.0.0.1:27017/mutualwords';
+var pathToMongoDb = 'mongodb://127.0.0.1:27018/mutualwords';
 var host = emailLoginInfo.sendHost;
 passwordless.init(new MongoStore(pathToMongoDb));
 
