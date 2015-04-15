@@ -189,6 +189,7 @@ router.post('/addwordlist', passwordless.restricted(), function(req, res) {
 
     if(name.length === 0){
         res.send("The name has length 0.");
+        return;
     }
 
     // Set our collection
@@ -203,8 +204,7 @@ router.post('/addwordlist', passwordless.restricted(), function(req, res) {
         if (err) {
             // If it failed, return error
             res.send("There was a problem adding the information to the database.");
-        }
-        else {
+        }else {
             res.location("wordlists");
             res.redirect("wordlists");
         }
