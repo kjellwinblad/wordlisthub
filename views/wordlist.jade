@@ -8,6 +8,9 @@ block scripts
 block content
     h1.
         Word List <i>#{wordList.name}</i>
+    | <i>Number of words:</i> #{wordList.words.length}
+    br
+    br
     form#makePublicPrivateForm(name="makePublicPrivateForm",method="post",action="/wordlists/#{wordList._id}/makepublicprivate")
         button(type="submit") Make !{(wordList.isPublic ? "Private" : "Public")}
     br
