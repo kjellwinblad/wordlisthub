@@ -18,10 +18,27 @@ $().ready(function(){
     }
     altButtons = [];
     _.each(_.range(numberOfAltButtons), function(index){
-        var altButton = $('<a href="#" class="list-group-item"></a>');
+        var altButton = $('<li class="list-group-item"></li>');
         altButton.appendTo(altButtonsDiv);
         altButtons[index] = altButton;
     });
+    function showStatisticsDialog(){
+        statisticsList.sort(function(a,b){
+            return b.failures - a.failures;
+        });
+        text = '<table>' +
+            '<tr><th>Word</th><th>Description</th><th>Failures</th><th>Successes</th></tr>';
+        _.each(statisticsList, function(word){
+            text = text +
+                '<tr><td>' + word.word +
+                '</td><td>' +word.explanation +
+                '</td><td>' + word.failures+
+                '</td></td><td>' + word.successes+ '</tr>';
+        });
+        
+        text = text + '</table>'
+        infoDialog("Statistics", text);
+    }
     function play(){
         if(wordsToLearn.length === 0){
             openOptionDialog("Game Completed",
@@ -56,12 +73,13 @@ $().ready(function(){
         definitionField.html('<b>'+wordToLearn.explanation+'</b>');
         _.each(_.range(numberOfAltButtons), function(index){
             var altButton = altButtons[index];
+            altButton.removeClass("active");
             var option = options[index];
             altButton.text(option.word);
             altButton.unbind('click.guessEvent');
             if(wordToLearn === option){
-                altButton.bind('click.guessEvent', function(){
-
+                altButton.bind('click.guessEvent', function(event){
+                    definitionField.focus();
                     var overlay = jQuery('<div id="successOverlay"></div>');//<br/>
                     overlay.appendTo(document.body);
                     overlay.fadeOut(1500, function(){ 
@@ -75,7 +93,8 @@ $().ready(function(){
                     play();
                 });
             }else{
-                altButton.bind('click.guessEvent', function(){
+                altButton.bind('click.guessEvent', function(event){
+                    definitionField.focus();
                     wordToLearn.failures = wordToLearn.failures + 1;
                     failures = failures + 1;
                     var overlay = jQuery('<div id="failOverlay"></div>');//<br/>
