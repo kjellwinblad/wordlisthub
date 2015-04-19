@@ -10,13 +10,18 @@ function openOptionDialog(title, text, options, callback) {
             }
         });
     });
+
+    var width = $( document ).width() - 30;
+    if(width > 950){
+        width = 900;
+    }
     // Define the Dialog and its properties.
     return dialogElement.dialog({
         resizable: false,
         modal: true,
         title: title,
         //height: 250,
-        width: 400,
+        width:  width,
         buttons: buttons
     });
 }

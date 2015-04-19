@@ -4,10 +4,12 @@ $().ready(function(){
     makePinyinTypeable(wordInput);
     var tryButton = $("#tryButton");
     var wordList = $.parseJSON($('#wordListInputField').val());
+    var statisticsList = [];
     var wordsToLearn = $.map(wordList.words, function(word){
         var clone = $.extend(true, {}, word);
         clone.failures = 0;
         clone.successes = 0;
+        statisticsList.push(clone);
         return clone;
     } );
     var failures = 0;
@@ -17,6 +19,23 @@ $().ready(function(){
             $(this).trigger("enterKey");
         }
     });
+    function showStatisticsDialog(){
+        statisticsList.sort(function(a,b){
+            return b.failures - a.failures;
+        });
+        text = '<table>' +
+            '<tr><th>Word</th><th>Description</th><th>Failures</th><th>Successes</th></tr>';
+        _.each(statisticsList, function(word){
+            text = text +
+                '<tr><td>' + word.word +
+                '</td><td>' +word.explanation +
+                '</td><td>' + word.failures+
+                '</td></td><td>' + word.successes+ '</tr>';
+        });
+        
+        text = text + '</table>'
+        infoDialog("Statistics", text);
+    }
     function play(){
         if(wordsToLearn.length === 0){
             openOptionDialog("Game Completed",
@@ -25,10 +44,12 @@ $().ready(function(){
                              "<b>Number of correct answers:" + successes +"</b><br>" +
                              "<b>Number of incorrect answers:" + failures +"</b><br>" +
                              "<p>" +
-                             "<p><b>Congratulation!</b>You have now completed this game! Now you can play something else or play the same game again.</p>",
-                             ["Play again", "Go to word lists"],
+                             "<p><b>Congratulation!</b>You have now completed this game! Now you can view detailed statistics, play something else or play the same game again.</p>",
+                             ["Statistics", "Play again", "Word lists"],
                              function(option){
                                  if(option == 0){
+                                     showStatisticsDialog();
+                                 }else if(option == 1){
                                      location.reload(); 
                                  }else{
                                      window.location.href = '/public_wordlists';

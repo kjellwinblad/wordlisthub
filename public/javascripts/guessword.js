@@ -3,10 +3,12 @@ $().ready(function(){
     var definitionField = $("#definitionFieldDiv");
     var altButtonsDiv = $("#altButtonDivs");
     var wordList = $.parseJSON($('#wordListInputField').val());
+    var statisticsList = [];
     var wordsToLearn = $.map(wordList.words, function(word){
         var clone = $.extend(true, {}, word);
         clone.failures = 0;
         clone.successes = 0;
+        statisticsList.push(clone);
         return clone;
     } );
     var failures = 0;
@@ -16,7 +18,7 @@ $().ready(function(){
     }
     altButtons = [];
     _.each(_.range(numberOfAltButtons), function(index){
-        var altButton = $('<button name="altButton"'+index+'/>');
+        var altButton = $('<a href="#" class="list-group-item"></a>');
         altButton.appendTo(altButtonsDiv);
         altButtons[index] = altButton;
     });
@@ -28,10 +30,12 @@ $().ready(function(){
                              "<b>Number of correct answers:" + successes +"</b><br>" +
                              "<b>Number of incorrect answers:" + failures +"</b><br>" +
                              "<p>" +
-                             "<p><b>Congratulation!</b>You have now completed this game! Now you can play something else or play the same game again.</p>",
-                             ["Play again", "Go to word lists"],
+                             "<p><b>Congratulation!</b>You have now completed this game! Now you can view detailed statistics, play something else or play the same game again.</p>",
+                             ["Statistics", "Play again", "Word lists"],
                              function(option){
                                  if(option == 0){
+                                     showStatisticsDialog();
+                                 }else if(option == 1){
                                      location.reload(); 
                                  }else{
                                      window.location.href = '/public_wordlists';
