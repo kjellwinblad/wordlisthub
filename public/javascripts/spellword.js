@@ -85,7 +85,7 @@ $().ready(function(){
                     var plainWord = word;
                     _.each(toneTable, function(tones, letter){
                         _.each(tones, function(withTone){
-                            plainWord = plainWord.replace(withTone, letter);
+                            plainWord = plainWord.replace(new RegExp(withTone, 'g'), letter);
                         });
                     });
                     wordsToTest.push(plainWord);
