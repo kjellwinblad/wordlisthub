@@ -1,4 +1,8 @@
 $().ready(function(){
+    var permitNonPinyinField = $("#permitNonPinyin");
+    function isNonPinyinPermited(){
+        return permitNonPinyinField.prop('checked');
+    }
     var definitionField = $("#definitionFieldDiv");
     var wordInput = $("#wordInput");
     makePinyinTypeable(wordInput);
@@ -61,7 +65,33 @@ $().ready(function(){
         var wordToLearn = wordsToLearn[wordIndex];
         definitionField.html('<b>'+wordToLearn.explanation+'</b>');
         function correctAnswerAction(){
-            if(_.indexOf(wordToLearn.word, wordInput.val()) !== -1 ){    
+            var wordsToTest = _.map(wordToLearn.word, function(w){return w;});
+            if(isNonPinyinPermited()){
+                var toneTable = {
+                    'a':['ā','á','ǎ','à'],
+                    'e':['ē','é','ě','è'],
+                    'i':['ī','í','ǐ','ì'],
+                    'o':['ō','ó','ǒ','ò'],
+                    'u':['ū','ú','ǔ','ù'],
+                    'ü':['ǖ','ǘ','ǚ','ǜ'],
+                    'A':['Ā','Á','Ǎ','À'],
+                    'E':['Ē','É','Ě','È'],
+                    'I':['Ī','Í','Ǐ','Ì'],
+                    'O':['Ō','Ó','Ǒ','Ò'],
+                    'U':['Ū','Ú','Ǔ','Ù'],
+                    'Ü':['Ǖ','Ǘ','Ǚ','Ǜ']
+                }
+                _.each(wordsToTest, function(word){
+                    var plainWord = word;
+                    _.each(toneTable, function(tones, letter){
+                        _.each(tones, function(withTone){
+                            plainWord = plainWord.replace(withTone, letter);
+                        });
+                    });
+                    wordsToTest.push(plainWord);
+                });
+            }
+            if(_.indexOf(wordsToTest, wordInput.val()) !== -1 ){    
                 var overlay = jQuery('<div id="successOverlay"></div>');//<br/>
                 overlay.appendTo(document.body);
                 overlay.fadeOut(1500, function(){ 
