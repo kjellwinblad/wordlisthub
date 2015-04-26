@@ -12,16 +12,20 @@ block content
             tr
                 td #{wordList.name}
                 td 
-                    button(name="deleteWordList", _id="#{wordList._id}", wordListName="#{wordList.name}") remove
+                    button.btn.btn-default(name="deleteWordList", _id="#{wordList._id}", wordListName="#{wordList.name}") remove
                 td 
-                    button(name="editButton", wordListId="#{wordList._id}") Edit
+                    button.btn.btn-default(name="editButton", wordListId="#{wordList._id}") Edit
                 td
-                    select(name="wordlistGameSelector", wordListId="#{wordList._id}")
-                        option(value="none", style="font-weight:bold;") Select Game
-                        option(value="guessword") Guess Word
-                        option(value="spellword") Spell Word
+                  div.dropdown
+                    button.btn.btn-default.dropdown-toggle(type="button" id="dropdownMenu#{i+1}" data-toggle="dropdown" aria-expanded="true") Select Game
+                        span.caret
+                    ul.dropdown-menu(role="menu" aria-labelledby="dropdownMenu#{i+1}")
+                        li(role="presentation")
+                             a(role="menuitem" tabindex="-1" href="/wordlists/#{wordList._id}/guessword") Guess Word
+                        li(role="presentation")
+                             a(role="menuitem" tabindex="-1" href="/wordlists/#{wordList._id}/spellword") Spell Word
     h2.
         Add Wordlist
     form#formAddWordList(name="addwordlist",method="post",action="/addwordlist")
         input#inputWordListName(type="text", placeholder="my word list", name="name")
-        button#btnSubmit(type="submit") Add!
+        button.btn.btn-default#btnSubmit(type="submit") Add!

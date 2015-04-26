@@ -154,6 +154,28 @@ router.get('/wordlists/:id', passwordless.restricted(),
     });
 });
 
+
+router.get('/wordlists/view/:id', function(req, res) {
+    var db = req.db;
+    var collection = db.get('wordLists');
+    var id = req.params.id
+    collection.findById(id,function(e,wordList){
+        if(wordList === undefined){
+            res.location("/public_wordlists");
+            res.redirect("/public_wordlists");
+        }else{
+            _.each(wordList.words, function(word){
+                word.jsonString = JSON.stringify(word)
+            });
+            res.render('wordlistview', {
+                "wordList" : wordList,
+                user: users[req.user]
+            });
+        }
+    });
+});
+
+
 router.get('/wordlists', passwordless.restricted(),
            function(req, res) {
     var db = req.db;
@@ -257,6 +279,7 @@ router.post('/sendtoken',
 		    callback(null, user);
                     users[user] =
                         {email: user,
+                         alias: "",
                          gravatar:'https://www.gravatar.com/avatar/' + crypto.createHash('md5').update(user).digest("hex") + '?&d=retro'};
 			// usually you would want something like:
 			// User.find({email: user}, callback(ret) {
@@ -268,6 +291,10 @@ router.post('/sendtoken',
 		}),
 	function(req, res) {
   		res.render('sent');
+});
+
+router.get('/edit_user', function(req, res) {
+    res.render('edit_user', { user: users[req.user] });
 });
 
 module.exports = router;

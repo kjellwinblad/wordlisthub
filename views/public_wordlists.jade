@@ -12,7 +12,13 @@ block content
             tr
                 td #{wordList.name}
                 td
-                    select(name="wordlistGameSelector", wordListId="#{wordList._id}")
-                        option(value="none", style="font-weight:bold;") Select Game
-                        option(value="guessword") Guess Word
-                        option(value="spellword") Spell Word
+                  a.btn.btn-default(href="/wordlists/view/#{wordList._id}" role="button") View
+                td
+                  div.dropdown
+                    button.btn.btn-default.dropdown-toggle(type="button" id="dropdownMenu#{i+1}" data-toggle="dropdown" aria-expanded="true") Select Game
+                        span.caret
+                    ul.dropdown-menu(role="menu" aria-labelledby="dropdownMenu#{i+1}")
+                        li(role="presentation")
+                             a(role="menuitem" tabindex="-1" href="/wordlists/#{wordList._id}/guessword") Guess Word
+                        li(role="presentation")
+                             a(role="menuitem" tabindex="-1" href="/wordlists/#{wordList._id}/spellword") Spell Word

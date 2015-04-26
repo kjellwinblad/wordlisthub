@@ -18,7 +18,7 @@ $().ready(function(){
     }
     altButtons = [];
     _.each(_.range(numberOfAltButtons), function(index){
-        var altButton = $('<li class="list-group-item"></li>');
+        var altButton = $('<button type="button" class="btn btn-default"></button>');
         altButton.appendTo(altButtonsDiv);
         altButtons[index] = altButton;
     });
@@ -79,10 +79,11 @@ $().ready(function(){
             altButton.unbind('click.guessEvent');
             if(wordToLearn === option){
                 altButton.bind('click.guessEvent', function(event){
-                    definitionField.focus();
+                    altButtons[index] = $('<button type="button" class="btn btn-default"></button>').text(altButton.text());
+                    altButton.replaceWith(altButtons[index]);
                     var overlay = jQuery('<div id="successOverlay"></div>');//<br/>
                     overlay.appendTo(document.body);
-                    overlay.fadeOut(1500, function(){ 
+                    overlay.fadeOut(1500, function(){
                         $(this).remove(); 
                     });
                     wordToLearn.successes = wordToLearn.successes + 1;
@@ -94,12 +95,13 @@ $().ready(function(){
                 });
             }else{
                 altButton.bind('click.guessEvent', function(event){
-                    definitionField.focus();
+                    altButtons[index] = $('<button type="button" class="btn btn-default"></button>').text(altButton.text());
+                    altButton.replaceWith(altButtons[index]);
                     wordToLearn.failures = wordToLearn.failures + 1;
                     failures = failures + 1;
                     var overlay = jQuery('<div id="failOverlay"></div>');//<br/>
                     overlay.appendTo(document.body);
-                    overlay.fadeOut(4000, function(){ 
+                    overlay.fadeOut(4000, function(){
                         $(this).remove(); 
                     });
                 });
