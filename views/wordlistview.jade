@@ -1,0 +1,19 @@
+extends layout
+
+block scripts
+  script(src='/javascripts/option_dialog.js')
+  script(src='/javascripts/wordlist.js')
+  script(src='/javascripts/typepinyin.js')
+
+block content
+    h1.
+        Word List <i>#{wordList.name}</i>
+    | <i>Number of words:</i> #{wordList.words.length}
+    br
+    br
+    table(id="wordListTable", wordListId="#{wordList._id}", style="border-collapse: collapse; border: 1px solid black;")
+        each word, i in wordList.words
+            tr(name="wordRow", position="#{i}", word="#{word.word}")
+                td(style="border: 1px solid black;")
+                    !{word.word.join(", ")}
+                td(style="border: 1px solid black;") #{word.explanation}
