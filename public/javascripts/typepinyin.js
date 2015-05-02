@@ -65,6 +65,11 @@ function makePinyinTypeable(textComponent){
                 textComponent.val(text.slice(0, pos-1) + alternatives[tone] + text.slice(pos-1 + 1));
                 setCaretToPos (textComponent[0], pos);
                 event.preventDefault();
+            }else if((changeChar == 'u' || changeChar == 'U') &&
+                     (event.which == 246 || event.which == 58)){
+                textComponent.val(text.slice(0, pos-1) + (changeChar == 'u' ? 'ü' : Ü) + text.slice(pos-1 + 1));
+                setCaretToPos (textComponent[0], pos);
+                event.preventDefault();
             }
         }
     });    
