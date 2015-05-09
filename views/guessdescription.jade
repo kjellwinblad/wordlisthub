@@ -1,0 +1,15 @@
+extends layout
+
+block scripts
+  script(src='/javascripts/guessdescription.js')
+  script(src='/javascripts/option_dialog.js')
+  script(src='/javascripts/lib/underscore-min.js')
+
+block content
+    input#wordListInputField(type="hidden", value="#{wordList}")
+    h1.
+        Guess Description
+    p
+        div#wordFieldDiv
+    p
+        div#altButtonDivs.btn-group-lg.btn-group-vertical
