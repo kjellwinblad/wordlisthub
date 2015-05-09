@@ -176,6 +176,27 @@ router.get('/wordlists/view/:id', function(req, res) {
 });
 
 
+router.get('/wordlists/record/:id', function(req, res) {
+    var db = req.db;
+    var collection = db.get('wordLists');
+    var id = req.params.id
+    collection.findById(id,function(e,wordList){
+        if(wordList === undefined){
+            res.location("/public_wordlists");
+            res.redirect("/public_wordlists");
+        }else{
+            _.each(wordList.words, function(word){
+                word.jsonString = JSON.stringify(word)
+            });
+            res.render('wordlistrecorder', {
+                "wordList" : wordList,
+                user: users[req.user]
+            });
+        }
+    });
+});
+
+
 router.get('/wordlists', passwordless.restricted(),
            function(req, res) {
     var db = req.db;
@@ -240,6 +261,18 @@ router.get('/wordlists/:id/guessword', function(req, res) {
     var id = req.params.id;
     collection.findById(id,function(e,wordList){
         res.render('guessword', {
+            "wordList" : JSON.stringify(wordList),
+            user: users[req.user] 
+        });
+    });
+});
+
+router.get('/wordlists/:id/guessdescription', function(req, res) {
+    var db = req.db;
+    var collection = db.get('wordLists');
+    var id = req.params.id;
+    collection.findById(id,function(e,wordList){
+        res.render('guessdescription', {
             "wordList" : JSON.stringify(wordList),
             user: users[req.user] 
         });
