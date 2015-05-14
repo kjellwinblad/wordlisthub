@@ -42,10 +42,10 @@ html(lang='en')
           ul.nav.navbar-nav.navbar-right
               if user
                   li
-                      a(href='/users/edit')
+                      a(href='/edit_user')
                           img(src='#{user.gravatar}&s=23')
                   li
-                      a(href='/users/edit') #{user.username || user.email} 
+                      a(href='/edit_user') #{user.username || user.email} 
                   li
                       a(href='/logout') Logout
               else

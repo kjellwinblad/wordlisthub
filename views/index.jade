@@ -17,6 +17,11 @@ block content
       else
         form(action="/sendtoken", method="POST")
           input(name="user", type="text", placeholder="your@email.com")
-          input(type="submit", value="Login / Register")
+          input(name="sendMethod", type="hidden", value="email")
+          input.btn.btn-default(type="submit", value="Login / Register")
+        form(action="/passwordlogin", method="POST")
+          input(name="user", type="text", placeholder="your@email.com")
+          input(name="password", type="password")
+          input(name="sendMethod", type="hidden", value="password")
+          input.btn.btn-default(type="submit", value="Login")
         p to create/view/edit/practice your own word lists.
-

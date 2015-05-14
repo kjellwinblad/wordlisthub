@@ -13,16 +13,18 @@ var MongoStore = require('passwordless-mongostore');
 var email   = require("emailjs");
 var fs = require('fs');
 
+
 var routes = require('./routes/index');
 var users = require('./routes/users');
 
-console.log("db", db);
-
 var app = express();
 
-// Make our db accessible to our router
+var loginTokenMap = {};
+
 app.use(function(req,res,next){
+    // Make our db accessible to our router
     req.db = db;
+    req.loginTokenMap = loginTokenMap;
     next();
 });
 
@@ -42,6 +44,7 @@ passwordless.init(new MongoStore(pathToMongoDb));
 
 // Set up a delivery service
 passwordless.addDelivery(
+    "email",
     function(tokenToSend, uidToSend, recipient, callback) {
         smtpServer.send({
             text:    'Hello!\nAccess your account here: http://' 
@@ -56,6 +59,15 @@ passwordless.addDelivery(
             }
             callback(err);
         });
+    });
+
+
+passwordless.addDelivery(
+    "password",
+    function(tokenToSend, uidToSend, recipient, callback) {
+        loginTokenMap[recipient]=
+            'http://' + host + '?token=' + tokenToSend + '&uid=' + encodeURIComponent(uidToSend)
+        callback();
     });
 
 // view engine setup

@@ -314,20 +314,79 @@ router.post('/sendtoken',
                         {email: user,
                          alias: "",
                          gravatar:'https://www.gravatar.com/avatar/' + crypto.createHash('md5').update(user).digest("hex") + '?&d=retro'};
-			// usually you would want something like:
-			// User.find({email: user}, callback(ret) {
-			// 		if(ret)
-			// 			callback(null, ret.id)
-			// 		else
-			// 			callback(null, null)
-			// })
-		}),
-	function(req, res) {
+		}, {deliveryField: "sendMethod"}),
+	    function(req, res) {
   		res.render('sent');
-});
+            });
 
-router.get('/edit_user', function(req, res) {
+/* POST login screen. */
+router.post('/passwordlogin',
+            function(req, res, next) {
+                var db = req.db;
+                var collection = db.get('user_information');
+                collection.findOne({user:req.body.user})
+                    .on('success', function (doc) {
+                        if(doc && (req.body.password === doc.password)){
+                            next();
+                        }else{
+                            res.render('wrong_password');
+                        }
+                    });
+            }, 
+	    passwordless.requestToken(
+		// Simply accept every user
+	        function(user, delivery, callback) {
+		    callback(null, user);
+                    users[user] =
+                        {email: user,
+                         alias: "",
+                         gravatar:'https://www.gravatar.com/avatar/' + crypto.createHash('md5').update(user).digest("hex") + '?&d=retro'};
+		}, {deliveryField: "sendMethod"}),
+	function(req, res) {
+            var user = req.body.user;
+            var loginURL = req.loginTokenMap[user];
+            delete req.loginTokenMap[user];
+            res.redirect(loginURL);
+        });
+
+
+router.get('/edit_user', passwordless.restricted(), function(req, res) {
     res.render('edit_user', { user: users[req.user] });
 });
+
+router.post('/setpassword', passwordless.restricted(), function(req, res) {
+    var db = req.db;
+    var password = req.body.password;
+
+    if(password.length === 0){
+        res.send("The password has length 0.");
+        return;
+    }
+
+    // Set our collection
+    var collection = db.get('user_information');
+
+    // Submit to the DB
+    collection.findOne({user:req.user})
+        .on('success', function (doc) {
+            if(doc){
+                doc.password = password;
+                collection.update({_id: doc._id}, doc);
+                res.render('edit_user', { user: users[req.user] });
+            }else{
+                collection.insert({user: req.user,
+                                   alias: "??????",
+                                   password: password}, function (err, doc) {
+                                       if (err) {
+                                           // If it failed, return error
+                                           res.send("There was a problem adding the information to the database.");
+                                       }else {
+                                           res.render('edit_user', { user: users[req.user] });
+                                       }
+                                   });
+            }
+        });
+});
+
 
 module.exports = router;

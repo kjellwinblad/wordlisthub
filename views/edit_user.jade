@@ -1,0 +1,14 @@
+extends layout
+
+block scripts
+  script(src='/javascripts/option_dialog.js')
+  script(src='/javascripts/lib/underscore-min.js')
+
+block content
+    h1.
+        Edit User
+    p
+        | <b>Login email:</b> #{ user.email}
+    form(action="/setpassword", method="POST")
+        input(name="password", type="password", placeholder="your hard-to-guess password")
+        input.btn.btn-default(type="submit", value="Set Password")
