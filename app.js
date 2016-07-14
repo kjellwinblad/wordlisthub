@@ -47,7 +47,7 @@ passwordless.addDelivery(
     "email",
     function(tokenToSend, uidToSend, recipient, callback) {
         smtpServer.send({
-            text:    'Hello!\nAccess your account here: http://' 
+            text:    'Hello!\nAccess your account here: https://' 
                 + host + '?token=' + tokenToSend + '&uid=' 
                 + encodeURIComponent(uidToSend), 
             from:    "no_reply@" + host, 
