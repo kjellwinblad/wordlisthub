@@ -1,7 +1,9 @@
 {
-        "user": "youremail@gmail.com",
-        "password": "",
-        "host": "smtp.gmail.com",
-        "useSSL": true,
-        "sendHost": "localhost:3000"
+    "email_user": "user",
+    "email_password": "no_password",
+    "email_host": "localhost",
+    "email_use_SSL": false,
+    "email_send_host": "wordlisthub.com",
+    "site_host": "localhost:3000",
+    "site_protocol": "http://"
 }

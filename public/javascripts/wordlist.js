@@ -10,7 +10,6 @@ $().ready(function(){
         });
     });
 
-
     $('button[name="editWord"]').click(function(){
         var position = $(this).attr("position");
         var word = jQuery.parseJSON($(this).attr("word"));
@@ -20,8 +19,7 @@ $().ready(function(){
         var editWordDiv = $('#editWordDiv');
         var newCell = $('<td colspan="4" style="border: 1px solid black;"></td>')
         wordListRow.html(newCell);
-        editWordDiv.detach();
-        //$("button").attr("disabled", "disabled");
+        $('button[name="editWord"]').attr("disabled", "disabled");
         $(editWordDiv.html()).appendTo(newCell);
         var editExplanationField  = $('#editExplanationField');
         makePinyinTypeable(editExplanationField);
@@ -66,7 +64,7 @@ $().ready(function(){
         });
         $('#editCancelButton').click(function(){
             //$("button").attr("disabled", "false");
-            location.reload();
+            location.reload(true);
         });
     });
 

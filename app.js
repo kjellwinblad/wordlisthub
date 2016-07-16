@@ -1,3 +1,4 @@
+var compression = require('compression');
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
@@ -19,6 +20,8 @@ var users = require('./routes/users');
 
 var app = express();
 
+app.use(compression());
+
 var loginTokenMap = {};
 
 app.use(function(req,res,next){
@@ -32,14 +35,17 @@ var data = fs.readFileSync("wordlisthub_config.json", 'utf8').toString();
 
 var emailLoginInfo = JSON.parse(data);
 var smtpServer  = email.server.connect({
-    user:    emailLoginInfo.user, 
-    password: emailLoginInfo.password, 
-    host:    emailLoginInfo.host, 
-    ssl:     emailLoginInfo.useSSL
+    user:    emailLoginInfo.email_user,
+    password: (emailLoginInfo.email_password === "no_password" ? undefined : emailLoginInfo.email_password), 
+    host:    emailLoginInfo.email_host, 
+    ssl:     emailLoginInfo.email_use_SSL
 });
 
 var pathToMongoDb = 'mongodb://127.0.0.1:27018/mutualwords';
-var host = emailLoginInfo.sendHost;
+var host = emailLoginInfo.email_send_host;
+var siteProtocol = emailLoginInfo.site_protocol;
+var siteHost = emailLoginInfo.site_host;
+
 passwordless.init(new MongoStore(pathToMongoDb));
 
 // Set up a delivery service
@@ -47,9 +53,9 @@ passwordless.addDelivery(
     "email",
     function(tokenToSend, uidToSend, recipient, callback) {
         smtpServer.send({
-            text:    'Hello!\nAccess your account here: https://' 
-                + host + '?token=' + tokenToSend + '&uid=' 
-                + encodeURIComponent(uidToSend), 
+            text:    ("Hello!\nAccess your account here: " + siteProtocol 
+                      + siteHost + "" + "?token=" + tokenToSend + '&uid=' 
+                      + encodeURIComponent(uidToSend)), 
             from:    "no_reply@" + host, 
             to:      recipient,
             subject: 'Token for ' + host
@@ -65,8 +71,8 @@ passwordless.addDelivery(
 passwordless.addDelivery(
     "password",
     function(tokenToSend, uidToSend, recipient, callback) {
-        loginTokenMap[recipient]=
-            'http://' + host + '?token=' + tokenToSend + '&uid=' + encodeURIComponent(uidToSend)
+        loginTokenMap[recipient]= ( '' +
+            siteProtocol + siteHost + '?token=' + tokenToSend + '&uid=' + encodeURIComponent(uidToSend))
         callback();
     });
 

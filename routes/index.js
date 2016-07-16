@@ -16,7 +16,7 @@ router.post('/wordlists/remove/:id', passwordless.restricted(),
     var db = req.db;
     var collection = db.get('wordLists');
     var id = req.params.id;
-    collection.findById(id,function(e,wordList){
+    collection.findOne({_id:id}).then(function(wordList){
         if(wordList == undefined || (wordList !== undefined && wordList.owner !== req.user)){
             res.location("/public_wordlists");
             res.redirect("/public_wordlists");
@@ -41,14 +41,13 @@ router.post('/wordlists/:id/editword/:position', passwordless.restricted(),
     }
     var explanation = req.body.explanation;
     var position = Math.round(req.params.position);
-    collection.findById(id,function(e,wordList){
+    collection.findOne({_id:id}).then(function(wordList){
         if(wordList == undefined || (wordList !== undefined && wordList.owner !== req.user)){
             res.location("/public_wordlists");
             res.redirect("/public_wordlists");
         }else{
             wordList.words[position] = {word:wordAlternatives, explanation:explanation};
-            var promise = collection.update({_id:id}, wordList);
-            promise.on('success', function(){
+            var promise = collection.update({_id:id}, wordList).then(function(){
                 res.location("/wordlists/" + id);
                 res.redirect("/wordlists/" + id);
             });
@@ -68,22 +67,26 @@ router.post('/wordlists/:id/addword', passwordless.restricted(),
         wordNr = wordNr + 1;
     }
     var explanation = req.body.explanation;
-    collection.findById(id,function(e,wordList){
+    collection.findOne({_id:id}).then(function(wordList){
+        console.log("SUCCESS", wordList);
         if(wordList === undefined || (wordList !== undefined && wordList.owner !== req.user)){
             res.location("/public_wordlists");
             res.redirect("/public_wordlists");
         }else{
+            console.log("EDIT", wordList);
             wordList.words.push({
                 word: wordAlternatives,
                 explanation: explanation
             });
-            var promise = collection.update({_id:id}, wordList);
-            promise.on('success', function(){
+            var promise = collection.update({_id:id}, wordList).then(function(){
+                console.log("success");
                 res.location("/wordlists/" + id);
                 res.redirect("/wordlists/" + id);
             });
+            console.log("PUSH");
         }
     });
+                console.log("REACG END");
 });
 
 
@@ -92,7 +95,7 @@ router.post('/wordlists/:id/makepublicprivate', passwordless.restricted(),
     var db = req.db;
     var collection = db.get('wordLists');
     var id = req.params.id;
-    collection.findById(id,function(e,wordList){
+    collection.findOne({_id:id}).then(function(wordList){
         if(wordList === undefined || (wordList !== undefined && wordList.owner !== req.user)){
             res.location("/public_wordlists");
             res.redirect("/public_wordlists");
@@ -102,8 +105,7 @@ router.post('/wordlists/:id/makepublicprivate', passwordless.restricted(),
             }else{
                 wordList['isPublic'] = !wordList['isPublic'];
             }
-            var promise = collection.update({_id:id}, wordList);
-            promise.on('success', function(){
+            var promise = collection.update({_id:id}, wordList).then(function(){
                 res.location("/wordlists/" + id);
                 res.redirect("/wordlists/" + id);
             });
@@ -118,14 +120,13 @@ router.post('/wordlists/:id/removeword/:position', passwordless.restricted(),
     var collection = db.get('wordLists');
     var id = req.params.id
     var position = req.params.position
-    collection.findById(id,function(e,wordList){
+    collection.findOne({_id:id}).then(function(wordList){
         if(wordList === undefined || (wordList !== undefined && wordList.owner !== req.user)){
             res.location("/public_wordlists");
             res.redirect("/public_wordlists");
         }else{
             wordList.words.splice(position, 1);
-            var promise = collection.update({_id:id}, wordList);
-            promise.on('success', function(){
+            var promise = collection.update({_id:id}, wordList).then(function(){
                 res.location("/wordlists/" + id);
                 res.redirect("/wordlists/" + id);
             });
@@ -138,7 +139,7 @@ router.get('/wordlists/:id', passwordless.restricted(),
     var db = req.db;
     var collection = db.get('wordLists');
     var id = req.params.id
-    collection.findById(id,function(e,wordList){
+    collection.findOne({_id:id}).then(function(wordList){
         if(wordList === undefined || (wordList !== undefined && wordList.owner !== req.user)){
             res.location("/public_wordlists");
             res.redirect("/public_wordlists");
@@ -159,7 +160,7 @@ router.get('/wordlists/view/:id', function(req, res) {
     var db = req.db;
     var collection = db.get('wordLists');
     var id = req.params.id
-    collection.findById(id,function(e,wordList){
+    collection.findOne({_id:id}).then(function(wordList){
         if(wordList === undefined){
             res.location("/public_wordlists");
             res.redirect("/public_wordlists");
@@ -180,7 +181,7 @@ router.get('/wordlists/record/:id', function(req, res) {
     var db = req.db;
     var collection = db.get('wordLists');
     var id = req.params.id
-    collection.findById(id,function(e,wordList){
+    collection.findOne({_id:id}).then(function(wordList){
         if(wordList === undefined){
             res.location("/public_wordlists");
             res.redirect("/public_wordlists");
@@ -259,7 +260,7 @@ router.get('/wordlists/:id/guessword', function(req, res) {
     var db = req.db;
     var collection = db.get('wordLists');
     var id = req.params.id;
-    collection.findById(id,function(e,wordList){
+    collection.findOne({_id:id}).then(function(wordList){
         res.render('guessword', {
             "wordList" : JSON.stringify(wordList),
             user: users[req.user] 
@@ -271,7 +272,7 @@ router.get('/wordlists/:id/guessdescription', function(req, res) {
     var db = req.db;
     var collection = db.get('wordLists');
     var id = req.params.id;
-    collection.findById(id,function(e,wordList){
+    collection.findOne({_id:id}).then(function(wordList){
         res.render('guessdescription', {
             "wordList" : JSON.stringify(wordList),
             user: users[req.user] 
@@ -284,7 +285,7 @@ router.get('/wordlists/:id/spellword', function(req, res) {
     var db = req.db;
     var collection = db.get('wordLists');
     var id = req.params.id;
-    collection.findById(id,function(e,wordList){
+    collection.findOne({_id:id}).then(function(wordList){
         res.render('spellword', {
             "wordList" : JSON.stringify(wordList),
             user: users[req.user] 
@@ -325,7 +326,7 @@ router.post('/passwordlogin',
                 var db = req.db;
                 var collection = db.get('user_information');
                 collection.findOne({user:req.body.user})
-                    .on('success', function (doc) {
+                    .then(function (doc) {
                         if(doc && (req.body.password === doc.password)){
                             next();
                         }else{
@@ -368,7 +369,7 @@ router.post('/setpassword', passwordless.restricted(), function(req, res) {
 
     // Submit to the DB
     collection.findOne({user:req.user})
-        .on('success', function (doc) {
+        .then(function (doc) {
             if(doc){
                 doc.password = password;
                 collection.update({_id: doc._id}, doc);
