@@ -216,8 +216,14 @@ router.get('/public_wordlists',
     var db = req.db;
     var collection = db.get('wordLists');
     collection.find({ isPublic: true },{},function(e,docs){
+        if (e) {
+            return res.status(500).render('error', {
+                message: e.message,
+                error: {}
+            });
+        }
         res.render('public_wordlists', {
-            "wordLists" : docs,
+            "wordLists" : docs || [],
             user: users[req.user] 
         });
     });

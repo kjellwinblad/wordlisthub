@@ -9,7 +9,7 @@ var bodyParser = require('body-parser');
 var mongo = require('mongodb');
 var monk = require('monk');
 var passwordless = require('passwordless');
-var MongoStore = require('passwordless-mongostore');
+var MongoStore = require('./mongo_token_store');
 var email   = require("emailjs");
 var fs = require('fs');
 
