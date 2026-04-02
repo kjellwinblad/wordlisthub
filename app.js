@@ -8,12 +8,15 @@ var expressSession = require('express-session');
 var bodyParser = require('body-parser');
 var mongo = require('mongodb');
 var monk = require('monk');
-var db = monk('127.0.0.1:27018/mutualwords');
 var passwordless = require('passwordless');
 var MongoStore = require('passwordless-mongostore');
 var email   = require("emailjs");
 var fs = require('fs');
 
+var mongoUri = process.env.WORDLISTHUB_MONGODB_URI || 'mongodb://127.0.0.1:27018/mutualwords';
+var configPath = process.env.WORDLISTHUB_CONFIG_PATH || 'wordlisthub_config.json';
+var sessionSecret = process.env.WORDLISTHUB_SESSION_SECRET || '42';
+var db = monk(mongoUri);
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -31,7 +34,7 @@ app.use(function(req,res,next){
     next();
 });
 
-var data = fs.readFileSync("wordlisthub_config.json", 'utf8').toString();
+var data = fs.readFileSync(configPath, 'utf8').toString();
 
 var emailLoginInfo = JSON.parse(data);
 var smtpServer  = email.server.connect({
@@ -41,12 +44,11 @@ var smtpServer  = email.server.connect({
     ssl:     emailLoginInfo.email_use_SSL
 });
 
-var pathToMongoDb = 'mongodb://127.0.0.1:27018/mutualwords';
 var host = emailLoginInfo.email_send_host;
 var siteProtocol = emailLoginInfo.site_protocol;
 var siteHost = emailLoginInfo.site_host;
 
-passwordless.init(new MongoStore(pathToMongoDb));
+passwordless.init(new MongoStore(mongoUri));
 
 // Set up a delivery service
 passwordless.addDelivery(
@@ -89,7 +91,7 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(expressSession({secret: '42'}));
+app.use(expressSession({secret: sessionSecret}));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(passwordless.sessionSupport());
@@ -137,4 +139,3 @@ app.use(function(err, req, res, next) {
 // });
 
 module.exports = app;
-
