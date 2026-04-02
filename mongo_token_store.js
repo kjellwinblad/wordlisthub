@@ -1,8 +1,6 @@
 'use strict';
 
-var util = require('util');
 var bcrypt = require('bcryptjs');
-var TokenStore = require('passwordless-tokenstore');
 var MongoClient = require('mongodb').MongoClient;
 
 function MongoStore(connection, options) {
@@ -10,16 +8,12 @@ function MongoStore(connection, options) {
         throw new Error('A valid connection string has to be provided');
     }
 
-    TokenStore.call(this);
-
     this._options = options || {};
     this._collectionName = 'passwordless-token';
     this._uri = connection;
     this._client = null;
     this._collection = null;
 }
-
-util.inherits(MongoStore, TokenStore);
 
 MongoStore.prototype.authenticate = function(token, uid, callback) {
     if (!token || !uid || !callback) {

@@ -19,7 +19,6 @@
         "monk": "^7.3.4",
         "underscore": "1.8.2",
         "passwordless": "1.1.1",
-        "passwordless-tokenstore": "1.1.0",
         "bcryptjs": "^2.4.3",
         "emailjs": "1.0.5",
         "express-session": "1.10.4"
