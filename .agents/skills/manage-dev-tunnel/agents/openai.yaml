@@ -1,0 +1,6 @@
+interface:
+  display_name: "Manage dev tunnel"
+  short_description: "Start, verify, and report the WordListHub dev tunnel"
+  default_prompt: >-
+    Use $manage-dev-tunnel to start or repair the project development tunnel and
+    report the fixed public URL and validation results.

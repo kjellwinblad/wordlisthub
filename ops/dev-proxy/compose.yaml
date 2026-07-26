@@ -1,0 +1,87 @@
+name: wordlisthub-dev-proxy
+
+services:
+  auth-cookie:
+    image: node:22-alpine
+    network_mode: host
+    user: "${DEV_PROXY_UID:-65532}:${DEV_PROXY_GID:-65532}"
+    command: ["node", "/app/auth-cookie-server.mjs"]
+    environment:
+      DEV_PROXY_AUTH_CONFIG_FILE: /run/secrets/auth-config
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    volumes:
+      - type: bind
+        source: ./auth-cookie-server.mjs
+        target: /app/auth-cookie-server.mjs
+        read_only: true
+        bind:
+          create_host_path: false
+      - type: bind
+        source: ./auth-credentials.mjs
+        target: /app/auth-credentials.mjs
+        read_only: true
+        bind:
+          create_host_path: false
+      - type: bind
+        source: ./.auth-config
+        target: /run/secrets/auth-config
+        read_only: true
+        bind:
+          create_host_path: false
+
+  nginx:
+    image: nginx:stable-alpine
+    network_mode: host
+    user: "101:101"
+    extra_hosts:
+      - "host.docker.internal:${DEV_PROXY_HOST_GATEWAY:-127.0.0.1}"
+    entrypoint: ["nginx"]
+    command: ["-g", "daemon off;"]
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    depends_on:
+      - auth-cookie
+    tmpfs:
+      - /tmp:uid=101,gid=101,mode=0700
+    volumes:
+      - type: bind
+        source: ./nginx.conf
+        target: /etc/nginx/nginx.conf
+        read_only: true
+        bind:
+          create_host_path: false
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    network_mode: host
+    user: "${DEV_PROXY_UID:-65532}:${DEV_PROXY_GID:-65532}"
+    command:
+      - tunnel
+      - --no-autoupdate
+      - --metrics
+      - 127.0.0.1:20244
+      - run
+      - --token-file
+      - /run/secrets/tunnel-token
+    depends_on:
+      - nginx
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    tmpfs:
+      - /tmp:uid=${DEV_PROXY_UID:-65532},gid=${DEV_PROXY_GID:-65532},mode=0700
+    volumes:
+      - type: bind
+        source: ./.tunnel-token
+        target: /run/secrets/tunnel-token
+        read_only: true
+        bind:
+          create_host_path: false

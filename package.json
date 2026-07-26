@@ -3,7 +3,12 @@
     "version": "0.0.0",
     "private": true,
     "scripts": {
-        "start": "node ./bin/www"
+        "start": "node ./bin/www",
+        "dev:proxy:password": "ops/dev-proxy/set-password.sh",
+        "dev:proxy:tunnel-token": "ops/dev-proxy/set-tunnel-token.sh",
+        "dev:proxy:up": "ops/dev-proxy/up.sh",
+        "dev:proxy:url": "ops/dev-proxy/show-url.sh",
+        "dev:proxy:down": "docker compose -f ops/dev-proxy/compose.yaml down"
     },
     "dependencies": {
         "express": "~4.10.6",

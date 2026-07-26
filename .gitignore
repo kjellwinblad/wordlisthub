@@ -29,3 +29,6 @@ node_modules
 
 \#*#
 *~
+
+/ops/dev-proxy/.auth-config
+/ops/dev-proxy/.tunnel-token
